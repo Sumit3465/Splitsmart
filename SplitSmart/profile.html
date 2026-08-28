@@ -46,7 +46,7 @@
               <option value="EUR">€ Euro (EUR)</option>
               <option value="GBP">£ British Pound (GBP)</option>
             </select>
-            <div class="hint">This is a local browser profile for Phase 1. Sign in/sign up pages manage this local identity only; there is no cloud authentication.</div>
+            <div class="hint">Your account settings are saved in this browser for Phase 1.</div>
           </div>
           <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
@@ -74,6 +74,14 @@
       </div>
 
       <div class="card card-pad" style="margin-bottom:20px;">
+        <div class="section-head"><div><h2>Workspace tools</h2><p style="margin:3px 0 0;font-size:.75rem">Extra Phase 1 tools for reviewing and managing your local ledger.</p></div></div>
+        <div class="profile-tool-grid">
+          <a class="profile-tool-card" href="monthly-review.html"><span>◔</span><div><strong>Monthly Review</strong><small>See your spending story and biggest changes.</small></div><b>→</b></a>
+          <a class="profile-tool-card" href="data.html"><span>↥</span><div><strong>Data Center</strong><small>Check storage, export backups and reset local data.</small></div><b>→</b></a>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:20px;">
         <div class="section-head"><h2>Appearance</h2></div>
         <div class="checkbox-row" style="justify-content:space-between;">
           <div>
@@ -92,7 +100,7 @@
         <div class="checkbox-row" style="justify-content:space-between;">
           <div>
             <div style="font-weight:650;font-size:.92rem;">Reset demo data</div>
-            <div class="hint">Reload the "Goa Trip 2026" sample group</div>
+            <div class="hint">Reload the sample demo workspace</div>
           </div>
           <button class="btn btn-outline btn-sm" id="resetDemoBtn">Reset Demo Data</button>
         </div>
@@ -114,11 +122,13 @@
 <script src="js/settlement.js"></script>
 <script src="js/groups.js"></script>
 <script src="js/app.js"></script>
+<script src="js/enhancements.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     initShell('profile', 'Profile & Settings');
     initProfilePage();
   });
 </script>
+<script src="js/ui-polish.js"></script><script src="js/phase1-plus.js"></script>
 </body>
 </html>

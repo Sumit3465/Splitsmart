@@ -1,0 +1,36 @@
+<svg width="560" height="440" viewBox="0 0 560 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="g1" x1="50" y1="20" x2="480" y2="400" gradientUnits="userSpaceOnUse"><stop stop-color="#FF7A29"/><stop offset="1" stop-color="#FFB16D"/></linearGradient>
+  <linearGradient id="g2" x1="80" y1="100" x2="450" y2="350" gradientUnits="userSpaceOnUse"><stop stop-color="#242B3D"/><stop offset="1" stop-color="#171B28"/></linearGradient>
+  <filter id="shadow" x="0" y="0" width="100%" height="100%" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="24" stdDeviation="22" flood-opacity=".3"/></filter>
+</defs>
+<circle cx="426" cy="116" r="88" fill="#FF7A29" opacity=".08"/>
+<circle cx="116" cy="338" r="96" fill="#5B8DEF" opacity=".07"/>
+<path d="M70 350C120 250 190 210 282 214C375 218 420 260 491 351" stroke="#FF7A29" stroke-opacity=".22" stroke-width="2" stroke-dasharray="6 9"/>
+<g filter="url(#shadow)">
+  <rect x="82" y="74" width="396" height="254" rx="30" fill="url(#g2)" stroke="white" stroke-opacity=".1"/>
+  <rect x="111" y="104" width="152" height="92" rx="20" fill="white" fill-opacity=".06"/>
+  <rect x="129" y="124" width="72" height="9" rx="4.5" fill="#FFB16D"/>
+  <rect x="129" y="145" width="108" height="7" rx="3.5" fill="white" fill-opacity=".25"/>
+  <rect x="129" y="164" width="84" height="7" rx="3.5" fill="white" fill-opacity=".12"/>
+  <rect x="282" y="104" width="167" height="92" rx="20" fill="url(#g1)"/>
+  <circle cx="321" cy="151" r="22" fill="white" fill-opacity=".2"/>
+  <path d="M309 151H333M321 139V163" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <text x="352" y="144" fill="white" font-family="Arial" font-size="12" font-weight="700">GROUP BALANCE</text>
+  <text x="352" y="166" fill="white" font-family="Arial" font-size="19" font-weight="800">₹ 4,280</text>
+  <rect x="111" y="216" width="338" height="82" rx="20" fill="white" fill-opacity=".045"/>
+  <path d="M132 272C166 254 184 264 214 242C239 224 261 252 290 232C318 212 341 239 367 222C389 208 414 219 430 204" stroke="#FF9A55" stroke-width="4" stroke-linecap="round"/>
+  <path d="M132 272C166 254 184 264 214 242C239 224 261 252 290 232C318 212 341 239 367 222C389 208 414 219 430 204V278H132V272Z" fill="#FF7A29" fill-opacity=".08"/>
+</g>
+<g>
+  <circle cx="135" cy="367" r="25" fill="#2CC78A"/>
+  <circle cx="196" cy="384" r="25" fill="#5B8DEF"/>
+  <circle cx="257" cy="368" r="25" fill="#FF9A55"/>
+  <path d="M119 367L151 367M180 384L212 384M241 368L273 368" stroke="white" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+  <rect x="330" y="346" width="138" height="58" rx="18" fill="#171B28" stroke="white" stroke-opacity=".08"/>
+  <circle cx="354" cy="375" r="13" fill="#2CC78A" fill-opacity=".16"/>
+  <path d="M348 375L352 379L361 369" stroke="#2CC78A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="377" y="371" fill="white" font-family="Arial" font-size="11" font-weight="700">ALL SETTLED</text>
+  <text x="377" y="388" fill="white" fill-opacity=".45" font-family="Arial" font-size="9">No pending balances</text>
+</g>
+</svg>

@@ -51,7 +51,7 @@ Profile Settings includes JSON backup/export and restore/import. Browser/site-da
 
 ## Demo data
 
-Demo data creates a sample `Goa Trip 2026` group. Demo members such as Sumit are sample group members only and are never used as the current user's default profile.
+Demo mode creates an anonymous sample workspace with generic member labels. It never creates or displays a named personal profile.
 
 ## Core settlement model
 

@@ -18,10 +18,80 @@ function iconSVG(pathData) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${pathData}"/></svg>`;
 }
 
+function getStoredSession() {
+  const session = getData(STORAGE_KEYS.SESSION, null);
+  return session && typeof session === 'object' ? session : null;
+}
+
+function hasActiveAuthSession() {
+  const account = getData(STORAGE_KEYS.AUTH, null);
+  const session = getStoredSession();
+  if (!account || !session?.active || !account.email || !session.email) return false;
+  return String(account.email).trim().toLowerCase() === String(session.email).trim().toLowerCase();
+}
+
+function logoutCurrentProfile() {
+  if (isDemoMode()) {
+    exitDemoMode();
+    window.location.href = 'login.html';
+    return;
+  }
+  removeData(STORAGE_KEYS.SESSION);
+  closeAccountMenu();
+  showToast('success', 'You have been logged out.');
+  setTimeout(() => { window.location.href = 'login.html?loggedout=1'; }, 180);
+}
+
+function switchProfile() {
+  if (isDemoMode()) {
+    exitDemoMode();
+    window.location.href = 'login.html?switch=1';
+    return;
+  }
+  // Phase 1 has one local credential set per browser. Switching therefore
+  // signs out first and returns to the normal login screen without deleting
+  // the current ledger. The next profile/account flow can be added later.
+  removeData(STORAGE_KEYS.SESSION);
+  closeAccountMenu();
+  window.location.href = 'login.html?switch=1';
+}
+
+function openAccountMenu() {
+  const menu = document.getElementById('accountMenu');
+  const button = document.getElementById('accountMenuBtn');
+  if (!menu || !button) return;
+  const isOpen = menu.classList.toggle('open');
+  button.setAttribute('aria-expanded', String(isOpen));
+}
+
+function closeAccountMenu() {
+  const menu = document.getElementById('accountMenu');
+  const button = document.getElementById('accountMenuBtn');
+  menu?.classList.remove('open');
+  button?.setAttribute('aria-expanded', 'false');
+}
+
+function leaveDemoWorkspace() {
+  const hadSession = hasActiveAuthSession();
+  exitDemoMode();
+  closeAccountMenu();
+  showToast('success', hadSession ? 'Demo ended. Your profile and data are back.' : 'Demo ended.');
+  setTimeout(() => {
+    window.location.href = hadSession ? 'dashboard.html' : 'login.html';
+  }, 250);
+}
+
 /** Renders the sidebar + topbar shell and wires up interactivity. Called once per inner page. */
 function initShell(activePage, pageTitle) {
-  // Phase 1 is local-only. A profile must exist before entering the app.
-  if (!hasProfile() && !getData(STORAGE_KEYS.SEEDED, false) && activePage !== 'profile') {
+  // Keep the app behind the normal sign-in flow when an account exists.
+  // Anonymous demo mode remains available without creating a named profile.
+  const demoMode = isDemoMode();
+  const hasAccount = Boolean(getData(STORAGE_KEYS.AUTH, null));
+  if (!demoMode && hasAccount && !hasActiveAuthSession()) {
+    window.location.replace(new URL('login.html', window.location.href).href);
+    return;
+  }
+  if (!hasProfile() && !demoMode && !hasAccount && activePage !== 'profile') {
     const target = new URL('profile.html?setup=1', window.location.href);
     window.location.replace(target.href);
     return;
@@ -31,8 +101,7 @@ function initShell(activePage, pageTitle) {
   applyTheme(savedTheme);
 
   const profile = getProfile();
-  const demoMode = !hasProfile() && getData(STORAGE_KEYS.SEEDED, false);
-  const displayName = hasProfile() ? profile.name : 'Demo Mode';
+  const displayName = demoMode ? 'Demo workspace' : (profile.name || 'Your profile');
   const sidebar = document.getElementById('sidebar');
   const topbar = document.getElementById('topbar');
   const shell = document.querySelector('.app-shell');
@@ -52,13 +121,14 @@ function initShell(activePage, pageTitle) {
         `).join('')}
       </nav>
       <div class="sidebar-foot">
-        <a href="profile.html" class="sidebar-user">
+        <button class="sidebar-user sidebar-user-button" id="sidebarAccountBtn" type="button" aria-label="Open account menu" aria-expanded="false">
           ${avatarHTML(displayName, 'avatar-sm')}
           <div>
             <div class="u-name">${escapeHTML(displayName)}</div>
-            <div class="u-role">${demoMode ? 'Demo data · Set up profile' : `${escapeHTML(profile.currency)} · View profile`}</div>
+            <div class="u-role">${demoMode ? 'Demo workspace' : `${escapeHTML(profile.currency)} · Account`}</div>
           </div>
-        </a>
+          <span class="sidebar-user-chevron">⌄</span>
+        </button>
       </div>
     `;
   }
@@ -75,13 +145,43 @@ function initShell(activePage, pageTitle) {
       <div class="topbar-actions">
         <span class="local-badge">Local mode</span>
         <button class="icon-btn" id="themeToggleBtn" aria-label="Toggle theme">
-          <span id="themeIcon">${iconSVG('M12 3v1m0 16v1m9-9h-1M4 12H3m15.4 6.4-.7-.7M6.3 6.3l-.7-.7m12.8 0-.7.7M6.3 17.7l-.7.7M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z')}</span>
+          <span id="themeIcon">${iconSVG('M12 3v1m0 16v1m9-9h-1M4 12H3m15.4 6.4-.7-.7M6.3 6.3l-.7-.7m12.8 0-.7.7M6.3 17.7l-.7.7M12 7a5 5 0 1 0 0 10 5 5 0 0 0-5-5Z')}</span>
         </button>
+        <div class="account-menu-wrap">
+          <button class="account-menu-trigger" id="accountMenuBtn" type="button" aria-haspopup="menu" aria-expanded="false">
+            ${avatarHTML(displayName, 'avatar-xs')}
+            <span class="account-menu-name">${escapeHTML(displayName)}</span>
+            <span class="account-menu-caret">⌄</span>
+          </button>
+          <div class="account-menu" id="accountMenu" role="menu">
+            <div class="account-menu-head">
+              ${avatarHTML(displayName, 'avatar-sm')}
+              <div><strong>${escapeHTML(displayName)}</strong><span>${demoMode ? 'Demo workspace' : escapeHTML(profile.email || 'Signed in')}</span></div>
+            </div>
+            <div class="account-menu-divider"></div>
+            ${demoMode ? `
+              <button type="button" class="account-menu-item account-menu-demo-exit" id="exitDemoBtn" role="menuitem">↪ <span>Exit demo</span></button>
+            ` : `
+              <a href="profile.html" class="account-menu-item" role="menuitem">◯ <span>Profile &amp; settings</span></a>
+              <button type="button" class="account-menu-item" id="switchProfileBtn" role="menuitem">⇄ <span>Switch profile</span></button>
+              <button type="button" class="account-menu-item account-menu-danger" id="logoutBtn" role="menuitem">↪ <span>Log out</span></button>
+            `}
+          </div>
+        </div>
         <a href="expenses.html?add=1" class="btn btn-primary btn-sm topbar-new-expense">+ Expense</a>
       </div>
     `;
     document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+    document.getElementById('accountMenuBtn')?.addEventListener('click', (event) => { event.stopPropagation(); openAccountMenu(); });
+    document.getElementById('sidebarAccountBtn')?.addEventListener('click', (event) => { event.stopPropagation(); openAccountMenu(); });
+    document.getElementById('switchProfileBtn')?.addEventListener('click', switchProfile);
+    document.getElementById('logoutBtn')?.addEventListener('click', logoutCurrentProfile);
+    document.getElementById('exitDemoBtn')?.addEventListener('click', leaveDemoWorkspace);
   }
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.account-menu-wrap') && !event.target.closest('#sidebarAccountBtn')) closeAccountMenu();
+  });
 
   const hamburgerBtn = document.getElementById('hamburgerBtn');
   const overlay = document.getElementById('sidebarOverlay');
@@ -125,9 +225,11 @@ function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') || 'light';
   const next = current === 'light' ? 'dark' : 'light';
   applyTheme(next);
-  const profile = getProfile();
-  profile.theme = next;
-  saveProfile(profile);
+  if (!isDemoMode()) {
+    const profile = getProfile();
+    profile.theme = next;
+    saveProfile(profile);
+  }
 }
 
 /* Apply saved theme immediately on any page (before shell init) to avoid flash */
@@ -155,8 +257,8 @@ function initLandingPage() {
   demoBtns.forEach((btn) => btn.addEventListener('click', (e) => {
     e.preventDefault();
     loadDemoData();
-    showToast('success', 'Demo data loaded — exploring the dashboard!');
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
+    showToast('success', 'Anonymous demo workspace loaded.');
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 500);
   }));
 }
 
@@ -305,6 +407,7 @@ function initDashboardPage() {
   const settlements = getSettlements();
   const summary = getPersonalSummary();
   const profile = getProfile();
+  const demoMode = isDemoMode();
   const totalExpenses = expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
   const net = Number(summary.youAreOwed || 0) - Number(summary.youOwe || 0);
 
@@ -313,9 +416,16 @@ function initDashboardPage() {
   const name = (profile.name || 'there').trim().split(/\s+/)[0];
   const dateText = new Intl.DateTimeFormat('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' }).format(new Date());
 
-  document.getElementById('dashboardGreetingTime').textContent = greeting;
-  document.getElementById('dashboardUserName').textContent = name || 'there';
-  document.getElementById('dashboardDateLine').textContent = `${dateText} · Here is what is happening across your groups.`;
+  const dashboardHeading = document.querySelector('.editorial-hero-copy h1');
+  if (demoMode) {
+    dashboardHeading.innerHTML = 'Welcome to SplitSmart <span class="hero-wave">👋</span>';
+  } else {
+    document.getElementById('dashboardGreetingTime').textContent = greeting;
+    document.getElementById('dashboardUserName').textContent = name || 'there';
+  }
+  document.getElementById('dashboardDateLine').textContent = demoMode
+    ? `${dateText} · Explore an anonymous sample workspace — your real data is safely separate.`
+    : `${dateText} · Here is what is happening across your groups.`;
   document.getElementById('statTotalGroups').textContent = groups.length;
   document.getElementById('statTotalExpenses').textContent = formatMoney(totalExpenses);
   document.getElementById('statYouOwe').textContent = formatMoney(summary.youOwe);
@@ -368,10 +478,8 @@ function initDashboardPage() {
       const paid = groupExpenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
       const memberBalances = calculateGroupBalances(group.id);
       const mine = memberBalances.find((entry) => {
-        const profileName = (profile.name || '').trim().toLowerCase();
-        const profileEmail = (profile.email || '').trim().toLowerCase();
         const member = (group.members || []).find((m) => m.id === entry.memberId);
-        return (member?.email || '').trim().toLowerCase() === profileEmail || (member?.name || '').trim().toLowerCase() === profileName;
+        return memberMatchesProfile(member, profile);
       });
       return { group, count: groupExpenses.length, paid, mine: Number(mine?.balance || 0) };
     }).sort((a,b) => (b.count - a.count) || (b.paid - a.paid)).slice(0, 4);
@@ -497,7 +605,8 @@ function initProfilePage() {
   const form = document.getElementById('profileForm');
   if (!form) return;
 
-  const profile = getProfile();
+  const demoMode = isDemoMode();
+  const profile = getEffectiveProfile();
   const setupMode = new URLSearchParams(window.location.search).get('setup') === '1' || !hasProfile();
   const formHeading = document.querySelector('#profileForm')?.closest('.card')?.querySelector('.section-head h2');
   if (formHeading && setupMode) formHeading.textContent = 'Set up your local profile';
@@ -514,7 +623,13 @@ function initProfilePage() {
   document.getElementById('profileCurrencySelect').value = profile.currency;
   document.getElementById('profileAvatarBig').outerHTML = avatarHTML(profile.name, 'avatar-lg').replace('<div', '<div id="profileAvatarBig"');
   document.getElementById('profileDisplayName').textContent = profile.name;
-  document.getElementById('profileDisplayEmail').textContent = profile.email;
+  document.getElementById('profileDisplayEmail').textContent = demoMode ? 'Anonymous demo workspace' : profile.email;
+
+  if (demoMode) {
+    form.querySelectorAll('input, select, button[type=submit]').forEach((control) => { control.disabled = true; });
+    form.querySelectorAll('input, select').forEach((control) => { control.setAttribute('aria-readonly', 'true'); });
+    form.querySelector('.section-head h2')?.replaceChildren(document.createTextNode('Demo workspace'));
+  }
 
   const darkSwitch = document.getElementById('darkModeSwitch');
   darkSwitch.checked = (document.documentElement.getAttribute('data-theme') === 'dark');
@@ -525,7 +640,7 @@ function initProfilePage() {
     saveProfile(p);
   });
 
-  form.addEventListener('submit', (e) => {
+  if (!demoMode) form.addEventListener('submit', (e) => {
     e.preventDefault();
     clearAllErrors(form);
 
@@ -620,7 +735,7 @@ function initProfilePage() {
   document.getElementById('resetDemoBtn')?.addEventListener('click', () => {
     confirmAction({
       title: 'Reset demo data?',
-      message: 'This will reload the sample "Goa Trip 2026" group and expenses. Your other data stays untouched.',
+      message: 'This will reload the anonymous sample workspace and expenses. Your other data stays untouched.',
       confirmLabel: 'Reset Demo Data',
       danger: false,
       onConfirm: () => {

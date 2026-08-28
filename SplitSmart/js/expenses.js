@@ -408,7 +408,7 @@ function renderExpenseHistory() {
     const group = groupMap[expense.groupId];
     const payer = group?.members.find((member) => member.id === expense.paidBy);
     return `
-      <tr>
+      <tr data-expense-id="${escapeHTML(expense.id)}" class="expense-clickable-row">
         <td>
           <div class="expense-title-cell">
             <span class="row-icon">${categoryEmoji(expense.category)}</span>

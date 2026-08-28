@@ -111,6 +111,22 @@
           </div>
         </section>
 
+        <section class="ss-review-grid" data-widget="monthly-review">
+          <div class="ss-review-card card">
+            <div class="panel-head"><div><span class="mini-label">MONTHLY REVIEW</span><h2>Your money story this month</h2></div><a href="monthly-review.html" class="text-link">Full review →</a></div>
+            <div class="ss-review-metrics">
+              <div class="ss-review-metric"><span>Spent</span><strong id="dashReviewTotal">₹0</strong></div>
+              <div class="ss-review-metric"><span>Expenses</span><strong id="dashReviewCount">0</strong></div>
+              <div class="ss-review-metric"><span>vs last month</span><strong id="dashReviewDelta">—</strong></div>
+            </div>
+            <div class="ss-review-bars" id="dashReviewBars"></div>
+          </div>
+          <div class="ss-month-card card ss-review-card">
+            <div style="position:relative;z-index:2"><span class="mini-label">KEEP IT CLEAR</span><h2 style="font-size:1.15rem;margin:8px 0">Every bill tells a story.</h2><p style="font-size:.74rem;max-width:280px">See what changed, what cost the most, and where your shared money is going.</p><a href="monthly-review.html" class="btn btn-primary btn-sm">Open monthly review</a></div>
+            <img class="ss-month-illustration" src="assets/receipt-spark.svg" alt="Illustration of a receipt and payment">
+          </div>
+        </section>
+
         <section class="quick-actions-section">
           <div class="dashboard-section-head"><div><span class="mini-label">DO IT FASTER</span><h2>Quick actions</h2></div><a href="how-it-works.html" class="text-link">How it works →</a></div>
           <div class="quick-action-grid">
@@ -136,6 +152,8 @@
 <script src="js/expenses.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/app.js"></script>
+<script src="js/enhancements.js"></script>
 <script>document.addEventListener('DOMContentLoaded',()=>{initShell('dashboard','Dashboard');initDashboardPage();});</script>
+<script src="js/ui-polish.js"></script><script src="js/phase1-plus.js"></script>
 </body>
 </html>
