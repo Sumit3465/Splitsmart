@@ -11,7 +11,8 @@ const STORAGE_KEYS = {
   PROFILE: 'splitsmart_profile',
   THEME: 'splitsmart_theme',
   SEEDED: 'splitsmart_seeded',
-  SESSION: 'splitsmart_session'
+  SESSION: 'splitsmart_session',
+  AUTH: 'splitsmart_auth'
 };
 
 const STORAGE_VERSION = 3;
@@ -19,6 +20,9 @@ const STORAGE_VERSION = 3;
 function saveData(key, data) {
   try {
     localStorage.setItem(key, JSON.stringify(data));
+    if (key !== STORAGE_KEYS.THEME && key !== STORAGE_KEYS.SESSION) {
+      localStorage.setItem('splitsmart_last_saved', new Date().toISOString());
+    }
     return true;
   } catch (err) {
     console.error('saveData failed for key:', key, err);
@@ -50,6 +54,8 @@ function removeData(key) {
 function clearData() {
   try {
     Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
+    localStorage.removeItem('splitsmart_last_saved');
+    localStorage.removeItem('splitsmart_dashboard_prefs');
     return true;
   } catch (err) {
     console.error('clearData failed:', err);
