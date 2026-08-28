@@ -16,15 +16,18 @@
     <header class="topbar" id="topbar"></header>
     <main class="page-content dashboard-page" id="dashboardRoot">
 
-      <section class="dashboard-hero">
-        <div>
-          <div class="eyebrow dashboard-eyebrow"><span class="eyebrow-dot"></span> Your expense command center</div>
-          <h1>Good <span id="dashboardGreetingTime">morning</span>, <span id="dashboardUserName">there</span>.</h1>
-          <p id="dashboardDateLine">Here is what is happening across your groups today.</p>
+      <section class="editorial-hero">
+        <div class="editorial-hero-copy">
+          <span class="eyebrow"><span class="eyebrow-dot"></span> Your expense command center</span>
+          <h1>Good <span id="dashboardGreetingTime">morning</span>, <span id="dashboardUserName">there</span>. <span class="hero-wave">👋</span></h1>
+          <p id="dashboardDateLine">Let's make every rupee count today.</p>
+          <div class="editorial-hero-actions">
+            <a href="groups.html?new=1" class="btn btn-primary">Create a group</a>
+            <a href="expenses.html?add=1" class="btn btn-outline">Add expense</a>
+          </div>
         </div>
-        <div class="dashboard-hero-actions">
-          <a href="expenses.html?add=1" class="btn btn-primary"><span>＋</span> Add expense</a>
-          <a href="groups.html?new=1" class="btn btn-outline">Create group</a>
+        <div class="editorial-hero-art">
+          <img src="assets/dashboard-trip.svg" alt="Illustration of friends planning a shared trip" loading="eager">
         </div>
       </section>
 
@@ -44,113 +47,88 @@
       </div>
 
       <div id="dashboardMainGrid">
-        <section class="dashboard-overview-grid">
-          <div class="balance-hero card">
-            <div class="balance-hero-top">
-              <div>
-                <span class="mini-label">YOUR NET POSITION</span>
-                <h2 id="dashboardNetBalance">₹0</h2>
-                <p id="dashboardNetLabel">You're all settled up.</p>
-              </div>
-              <div class="balance-orb" id="dashboardBalanceOrb">↗</div>
+        <section class="editorial-snapshot-grid">
+          <div class="snapshot-card snapshot-balance card">
+            <div class="snapshot-card-top">
+              <div><span class="mini-label">YOUR BALANCE SNAPSHOT</span><span id="dashboardNetLabel" class="snapshot-status">You're all settled up.</span></div>
+              <div class="snapshot-icon" id="dashboardBalanceOrb">↗</div>
             </div>
-            <div class="balance-split">
-              <div class="balance-mini balance-mini-negative">
-                <span>You owe</span>
-                <strong id="statYouOwe">₹0</strong>
-              </div>
-              <div class="balance-divider"></div>
-              <div class="balance-mini balance-mini-positive">
-                <span>You're owed</span>
-                <strong id="statYouAreOwed">₹0</strong>
-              </div>
+            <strong class="snapshot-total" id="dashboardNetBalance">₹0</strong>
+            <div class="snapshot-line" id="dashboardSnapshotLine" aria-label="Balance trend"></div>
+            <div class="snapshot-split">
+              <div><span>You owe</span><strong class="amt-neg" id="statYouOwe">₹0</strong></div>
+              <div><span>You're owed</span><strong class="amt-pos" id="statYouAreOwed">₹0</strong></div>
             </div>
           </div>
+          <div class="snapshot-stat card"><span class="mini-label">TRACKED SPENDING</span><strong id="statTotalExpenses">₹0</strong><span>Across all active expenses</span><a href="expenses.html">View expenses →</a></div>
+          <div class="snapshot-stat card"><span class="mini-label">ACTIVE GROUPS</span><strong id="statTotalGroups">0</strong><span>Shared spaces you belong to</span><a href="groups.html">View groups →</a></div>
+        </section>
 
-          <div class="dashboard-mini-stack">
-            <div class="metric-card card">
-              <div class="metric-icon metric-orange">◫</div>
-              <div>
-                <span>Tracked expenses</span>
-                <strong id="statTotalExpenses">₹0</strong>
-              </div>
-              <a href="expenses.html" aria-label="View expenses">↗</a>
+        <section class="dashboard-visual-grid editorial-charts">
+          <div class="dashboard-chart-card card">
+            <div class="panel-head chart-head">
+              <div><span class="mini-label">SPENDING PULSE</span><h2>Recent spending trend</h2></div>
+              <div class="chart-filter" id="dashboardTrendMeta">Last 6 months</div>
             </div>
-            <div class="metric-card card">
-              <div class="metric-icon metric-blue">◌</div>
-              <div>
-                <span>Active groups</span>
-                <strong id="statTotalGroups">0</strong>
-              </div>
-              <a href="groups.html" aria-label="View groups">↗</a>
+            <div class="dashboard-line-chart" id="dashboardTrendChart" aria-label="Monthly spending trend"></div>
+          </div>
+          <div class="dashboard-chart-card dashboard-category-card card">
+            <div class="panel-head chart-head">
+              <div><span class="mini-label">CATEGORY MIX</span><h2>Where money goes</h2></div>
+              <a href="analytics.html" class="text-link">Details →</a>
+            </div>
+            <div class="category-visual">
+              <div class="dashboard-donut" id="dashboardCategoryDonut" aria-label="Expense category breakdown"></div>
+              <div class="dashboard-donut-center"><strong id="dashboardCategoryTotal">₹0</strong><span>total spend</span></div>
+              <div class="dashboard-category-legend" id="dashboardCategoryLegend"></div>
             </div>
           </div>
         </section>
 
-        <section class="dashboard-section-head">
-          <div>
-            <span class="mini-label">DO IT FASTER</span>
-            <h2>Quick actions</h2>
-          </div>
-          <a href="how-it-works.html" class="text-link">How it works <span>→</span></a>
-        </section>
-
-        <section class="quick-action-grid">
-          <a class="quick-action-card card" href="expenses.html?add=1">
-            <div class="quick-action-icon orange">＋</div>
-            <div><strong>Add expense</strong><span>Split a new bill</span></div>
-            <span class="quick-arrow">↗</span>
-          </a>
-          <a class="quick-action-card card" href="settlement.html">
-            <div class="quick-action-icon green">↗</div>
-            <div><strong>Settle up</strong><span>See who pays whom</span></div>
-            <span class="quick-arrow">↗</span>
-          </a>
-          <a class="quick-action-card card" href="groups.html?new=1">
-            <div class="quick-action-icon blue">◎</div>
-            <div><strong>Create group</strong><span>Start a shared space</span></div>
-            <span class="quick-arrow">↗</span>
-          </a>
-        </section>
-
-        <section class="dashboard-content-grid">
+        <section class="editorial-three-grid">
           <div class="dashboard-panel card">
-            <div class="panel-head">
-              <div><span class="mini-label">LATEST</span><h2>Recent expenses</h2></div>
-              <a href="expenses.html" class="text-link">View all →</a>
-            </div>
+            <div class="panel-head"><div><span class="mini-label">LATEST</span><h2>Recent expenses</h2></div><a href="expenses.html" class="text-link">View all →</a></div>
             <div class="modern-list" id="recentExpensesList"></div>
           </div>
-
           <div class="dashboard-panel card">
-            <div class="panel-head">
-              <div><span class="mini-label">MONEY MOVED</span><h2>Recent settlements</h2></div>
-              <a href="settlement.html" class="text-link">View all →</a>
-            </div>
+            <div class="panel-head"><div><span class="mini-label">MONEY MOVED</span><h2>Recent settlements</h2></div><a href="settlement.html" class="text-link">View all →</a></div>
             <div class="modern-list" id="recentSettlementsList"></div>
+          </div>
+          <div class="dashboard-panel card">
+            <div class="panel-head"><div><span class="mini-label">SHARED SPACES</span><h2>Top groups</h2></div><a href="groups.html" class="text-link">View all →</a></div>
+            <div class="group-mini-list" id="dashboardTopGroups"></div>
+          </div>
+        </section>
+
+        <section class="editorial-story-grid">
+          <div class="smart-money-card card">
+            <div class="smart-money-copy"><span class="mini-label">SMART MONEY MOMENT</span><h2 id="dashboardVisualInsightTitle">Your shared spending, at a glance.</h2><p id="dashboardVisualInsightText">Keep adding expenses as they happen. SplitSmart turns the ledger into useful patterns on this device.</p><a href="analytics.html" class="btn btn-primary btn-sm">Explore analytics →</a></div>
+            <img src="assets/dashboard-wallet.svg" alt="Illustration of wallets and payment cards" loading="lazy">
+          </div>
+          <div class="trip-story-card card">
+            <div><span class="mini-label">PLAN TOGETHER</span><h2>Trips are easier when the money stays clear.</h2><p>Create a group, capture every bill, and let SplitSmart keep the balance understandable.</p><a href="use-cases.html" class="text-link">Explore use cases →</a></div>
+            <img src="assets/receipt-spark.svg" alt="Illustration of a receipt and completed payment" loading="lazy">
+          </div>
+        </section>
+
+        <section class="quick-actions-section">
+          <div class="dashboard-section-head"><div><span class="mini-label">DO IT FASTER</span><h2>Quick actions</h2></div><a href="how-it-works.html" class="text-link">How it works →</a></div>
+          <div class="quick-action-grid">
+            <a class="quick-action-card card" href="expenses.html?add=1"><div class="quick-action-icon orange">＋</div><div><strong>Add expense</strong><span>Split a new bill</span></div><span class="quick-arrow">↗</span></a>
+            <a class="quick-action-card card" href="groups.html?new=1"><div class="quick-action-icon blue">◎</div><div><strong>Create group</strong><span>Start a shared space</span></div><span class="quick-arrow">↗</span></a>
+            <a class="quick-action-card card" href="settlement.html"><div class="quick-action-icon green">↗</div><div><strong>Settle up</strong><span>See who pays whom</span></div><span class="quick-arrow">↗</span></a>
+            <a class="quick-action-card card" href="analytics.html"><div class="quick-action-icon purple">▥</div><div><strong>View analytics</strong><span>Understand your spending</span></div><span class="quick-arrow">↗</span></a>
           </div>
         </section>
 
         <section class="dashboard-bottom-grid">
-          <div class="insight-card card">
-            <div class="insight-mark">✦</div>
-            <div>
-              <span class="mini-label">SMART INSIGHT</span>
-              <h3 id="dashboardInsightTitle">Keep every split in one place.</h3>
-              <p id="dashboardInsightText">Add expenses as they happen and SplitSmart will keep the balances ready for settlement.</p>
-            </div>
-          </div>
-          <a href="analytics.html" class="analytics-teaser card">
-            <div><span class="mini-label">ANALYTICS</span><h3>See where your money goes</h3><p>Explore categories, contributions and spending patterns.</p></div>
-            <span class="teaser-arrow">→</span>
-          </a>
+          <div class="insight-card card"><div class="insight-mark">✦</div><div><span class="mini-label">SMART INSIGHT</span><h3 id="dashboardInsightTitle">Keep every split in one place.</h3><p id="dashboardInsightText">Add expenses as they happen and SplitSmart will keep the balances ready for settlement.</p></div></div>
+          <a href="analytics.html" class="analytics-teaser card"><div><span class="mini-label">ANALYTICS</span><h3>See where your money goes</h3><p>Explore categories, contributions and spending patterns.</p></div><span class="teaser-arrow">→</span></a>
         </section>
       </div>
-
     </main>
   </div>
 </div>
-
 <script src="js/storage.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/settlement.js"></script>
@@ -158,11 +136,6 @@
 <script src="js/expenses.js"></script>
 <script src="js/analytics.js"></script>
 <script src="js/app.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    initShell('dashboard', 'Dashboard');
-    initDashboardPage();
-  });
-</script>
+<script>document.addEventListener('DOMContentLoaded',()=>{initShell('dashboard','Dashboard');initDashboardPage();});</script>
 </body>
 </html>

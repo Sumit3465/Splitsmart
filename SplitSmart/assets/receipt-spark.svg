@@ -1,0 +1,21 @@
+<svg width="240" height="180" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paper" x1="55" y1="22" x2="188" y2="164" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#EEF0FF"/>
+    </linearGradient>
+    <filter id="s" x="25" y="12" width="190" height="160" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#4B4F7A" flood-opacity=".16"/>
+    </filter>
+  </defs>
+  <circle cx="188" cy="38" r="24" fill="#FF7A29" fill-opacity=".13"/>
+  <circle cx="45" cy="136" r="30" fill="#6E7CFF" fill-opacity=".10"/>
+  <g filter="url(#s)">
+    <path d="M59 25H176C181.523 25 186 29.4772 186 35V143L176 137L166 143L156 137L146 143L136 137L126 143L116 137L106 143L96 137L86 143L76 137L66 143L56 137L46 143V38C46 30.8203 51.8203 25 59 25Z" fill="url(#paper)"/>
+    <rect x="66" y="48" width="72" height="9" rx="4.5" fill="#15182A" fill-opacity=".10"/>
+    <rect x="66" y="70" width="101" height="7" rx="3.5" fill="#15182A" fill-opacity=".08"/>
+    <rect x="66" y="86" width="86" height="7" rx="3.5" fill="#15182A" fill-opacity=".08"/>
+    <rect x="66" y="102" width="55" height="7" rx="3.5" fill="#15182A" fill-opacity=".08"/>
+    <circle cx="154" cy="111" r="17" fill="#1FB579" fill-opacity=".13"/>
+    <path d="M146 111L151 116L162 104" stroke="#1FB579" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

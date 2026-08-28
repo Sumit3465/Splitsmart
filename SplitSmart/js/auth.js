@@ -18,8 +18,10 @@ function initSignupPage() {
 
   const existing = hasProfile();
   if (existing) {
-    const note = document.getElementById('signupExistingNote');
-    if (note) note.hidden = false;
+    const state = document.getElementById('signupExistingState');
+    if (state) state.hidden = false;
+    form.hidden = true;
+    return;
   }
 
   form.addEventListener('submit', (event) => {
@@ -52,10 +54,6 @@ function initSigninPage() {
   const form = document.getElementById('signinForm');
   if (!form) return;
 
-  const profile = getProfile();
-  if (hasProfile()) {
-    document.getElementById('knownEmail').textContent = profile.email || 'local profile';
-  }
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();

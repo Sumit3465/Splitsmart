@@ -178,6 +178,124 @@ function animateCounters() {
 /* ============================================================
    Dashboard page
    ============================================================ */
+function dashboardMonthSeries(expenses, count = 6) {
+  const now = new Date();
+  const months = [];
+  for (let i = count - 1; i >= 0; i -= 1) {
+    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    months.push({
+      key,
+      label: date.toLocaleDateString('en-IN', { month: 'short' }),
+      amount: 0
+    });
+  }
+  const byKey = new Map(months.map((item) => [item.key, item]));
+  expenses.forEach((expense) => {
+    const raw = expense.date || expense.createdAt;
+    const date = new Date(raw);
+    if (Number.isNaN(date.getTime())) return;
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const bucket = byKey.get(key);
+    if (bucket) bucket.amount += Number(expense.amount || 0);
+  });
+  return months;
+}
+
+function renderDashboardTrend(expenses) {
+  const host = document.getElementById('dashboardTrendChart');
+  if (!host) return;
+  const points = dashboardMonthSeries(expenses, 6);
+  const width = 760;
+  const height = 225;
+  const pad = { top: 22, right: 22, bottom: 34, left: 22 };
+  const innerW = width - pad.left - pad.right;
+  const innerH = height - pad.top - pad.bottom;
+  const max = Math.max(1, ...points.map((p) => p.amount));
+  const step = points.length > 1 ? innerW / (points.length - 1) : innerW;
+  const coords = points.map((p, index) => ({
+    ...p,
+    x: pad.left + step * index,
+    y: pad.top + innerH - ((p.amount / max) * innerH)
+  }));
+  const path = coords.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  const area = `${path} L ${coords[coords.length - 1].x.toFixed(1)} ${(height - pad.bottom).toFixed(1)} L ${coords[0].x.toFixed(1)} ${(height - pad.bottom).toFixed(1)} Z`;
+  const grid = [0, .5, 1].map((ratio) => {
+    const y = pad.top + innerH - ratio * innerH;
+    const value = max * ratio;
+    return `<line class="chart-grid-line" x1="${pad.left}" x2="${width - pad.right}" y1="${y}" y2="${y}"/>` +
+      `<text class="chart-value-label" x="${width - pad.right}" y="${y - 5}" text-anchor="end">${formatMoney(value)}</text>`;
+  }).join('');
+  const labels = coords.map((p) => `<text class="chart-axis-label" x="${p.x}" y="${height - 10}" text-anchor="middle">${p.label}</text>`).join('');
+  const dots = coords.map((p, i) => `<circle class="${i === coords.length - 1 ? 'chart-dot-active' : 'chart-dot'}" cx="${p.x}" cy="${p.y}" r="${i === coords.length - 1 ? 5 : 4}"/>`).join('');
+  host.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Six month spending trend">
+      <defs><linearGradient id="dashboardAreaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6E7CFF" stop-opacity=".24"/><stop offset="100%" stop-color="#6E7CFF" stop-opacity="0"/></linearGradient></defs>
+      ${grid}
+      <path class="chart-area" d="${area}"/>
+      <path class="chart-line" d="${path}"/>
+      ${dots}
+      ${labels}
+    </svg>`;
+}
+
+function renderDashboardCategoryMix(expenses) {
+  const donut = document.getElementById('dashboardCategoryDonut');
+  const legend = document.getElementById('dashboardCategoryLegend');
+  const totalEl = document.getElementById('dashboardCategoryTotal');
+  if (!donut || !legend || !totalEl) return;
+
+  const totals = expenses.reduce((acc, expense) => {
+    const category = expense.category || 'Other';
+    acc[category] = (acc[category] || 0) + Number(expense.amount || 0);
+    return acc;
+  }, {});
+  const rows = Object.entries(totals).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const total = rows.reduce((sum, [, amount]) => sum + amount, 0);
+  const fallback = [
+    ['Food', '#FF7A29'], ['Travel', '#6E7CFF'], ['Accommodation', '#1FB579'],
+    ['Entertainment', '#F2B84B'], ['Other', '#A6ADC1']
+  ];
+  const colorFor = (category, index) => {
+    if (typeof CATEGORY_COLORS !== 'undefined' && CATEGORY_COLORS[category]) return CATEGORY_COLORS[category];
+    return fallback[index % fallback.length][1];
+  };
+  const colors = rows.map(([category], index) => colorFor(category, index));
+  let cursor = 0;
+  const segments = rows.length ? rows.map(([category, amount], index) => {
+    const start = cursor;
+    cursor += total ? (amount / total) * 100 : 0;
+    return `${colors[index]} ${start.toFixed(2)}% ${cursor.toFixed(2)}%`;
+  }) : ['#CBD0DD 0 100%'];
+  donut.style.background = `conic-gradient(${segments.join(',')})`;
+  totalEl.textContent = formatMoney(total);
+  legend.innerHTML = rows.length ? rows.map(([category, amount], index) => {
+    const pct = total ? Math.round((amount / total) * 100) : 0;
+    return `<div class="dashboard-category-row"><i style="background:${colors[index]}"></i><span>${escapeHTML(category)}</span><strong>${pct}%</strong></div>`;
+  }).join('') : `<div class="dashboard-category-empty">Add expenses to see your mix.</div>`;
+}
+
+function renderDashboardVisualInsight(expenses, groups, summary) {
+  const title = document.getElementById('dashboardVisualInsightTitle');
+  const text = document.getElementById('dashboardVisualInsightText');
+  if (!title || !text) return;
+  if (!expenses.length) {
+    title.textContent = 'Your shared spending, at a glance.';
+    text.textContent = 'Once you add expenses, this space turns your ledger into useful patterns without leaving this device.';
+    return;
+  }
+  const categoryTotals = expenses.reduce((acc, expense) => {
+    const key = expense.category || 'Other';
+    acc[key] = (acc[key] || 0) + Number(expense.amount || 0);
+    return acc;
+  }, {});
+  const topCategory = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
+  if (topCategory) {
+    title.textContent = `${topCategory[0]} is your biggest shared spend.`;
+    text.textContent = `${formatMoney(topCategory[1])} of the current ledger sits in ${topCategory[0].toLowerCase()}. You have ${groups.length} active group${groups.length === 1 ? '' : 's'} and ${summary.youOwe > 0 ? `${formatMoney(summary.youOwe)} still to settle` : 'no personal amount waiting to settle'}.`;
+  }
+}
+
 function initDashboardPage() {
   const root = document.getElementById('dashboardRoot');
   if (!root) return;
@@ -203,6 +321,10 @@ function initDashboardPage() {
   document.getElementById('statYouOwe').textContent = formatMoney(summary.youOwe);
   document.getElementById('statYouAreOwed').textContent = formatMoney(summary.youAreOwed);
   document.getElementById('dashboardNetBalance').textContent = formatMoney(Math.abs(net));
+
+  renderDashboardTrend(expenses);
+  renderDashboardCategoryMix(expenses);
+  renderDashboardVisualInsight(expenses, groups, summary);
 
   const netLabel = document.getElementById('dashboardNetLabel');
   const balanceOrb = document.getElementById('dashboardBalanceOrb');
@@ -237,6 +359,35 @@ function initDashboardPage() {
   } else {
     insightTitle.textContent = 'Everything is balanced.';
     insightText.textContent = 'Nice work. Your current expenses do not leave you with an outstanding balance.';
+  }
+
+  const topGroupsHost = document.getElementById('dashboardTopGroups');
+  if (topGroupsHost) {
+    const rankedGroups = groups.map((group) => {
+      const groupExpenses = expenses.filter((expense) => expense.groupId === group.id);
+      const paid = groupExpenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+      const memberBalances = calculateGroupBalances(group.id);
+      const mine = memberBalances.find((entry) => {
+        const profileName = (profile.name || '').trim().toLowerCase();
+        const profileEmail = (profile.email || '').trim().toLowerCase();
+        const member = (group.members || []).find((m) => m.id === entry.memberId);
+        return (member?.email || '').trim().toLowerCase() === profileEmail || (member?.name || '').trim().toLowerCase() === profileName;
+      });
+      return { group, count: groupExpenses.length, paid, mine: Number(mine?.balance || 0) };
+    }).sort((a,b) => (b.count - a.count) || (b.paid - a.paid)).slice(0, 4);
+
+    topGroupsHost.innerHTML = rankedGroups.length ? rankedGroups.map(({group,count,mine}) => {
+      const visibleMembers = (group.members || []).slice(0,3);
+      const status = mine > 0.005 ? 'You’re owed' : mine < -0.005 ? 'You owe' : 'Balanced';
+      const amount = Math.abs(mine);
+      const tone = mine > 0.005 ? 'amt-pos' : mine < -0.005 ? 'amt-neg' : '';
+      return `
+        <a class="group-mini-item" href="group-details.html?id=${encodeURIComponent(group.id)}">
+          <div class="group-mini-avatars">${visibleMembers.map(member => avatarHTML(member.name, 'avatar')).join('')}</div>
+          <div class="group-mini-main"><strong>${escapeHTML(group.name)}</strong><span>${group.members.length} member${group.members.length===1?'':'s'} · ${count} expense${count===1?'':'s'}</span></div>
+          <div class="group-mini-amount"><strong class="${tone}">${amount ? formatMoney(amount) : '—'}</strong><span>${status}</span></div>
+        </a>`;
+    }).join('') : `<div class="dashboard-list-empty"><span>◎</span><div><strong>No groups yet</strong><p>Create your first shared space.</p></div></div>`;
   }
 
   const recentExpenses = [...expenses].sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt)).slice(0, 5);
