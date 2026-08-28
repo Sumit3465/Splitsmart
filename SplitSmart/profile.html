@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — SplitSmart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="main-area">
+    <header class="topbar" id="topbar"></header>
+    <main class="page-content" style="max-width:760px;">
+
+      <div class="card profile-header" style="margin-bottom:24px;">
+        <div class="avatar avatar-lg" id="profileAvatarBig">?</div>
+        <div>
+          <h2 id="profileDisplayName" style="font-size:1.2rem;margin-bottom:2px;">—</h2>
+          <p id="profileDisplayEmail" style="margin:0;">—</p>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:20px;">
+        <div class="section-head"><h2>Profile Information</h2></div>
+        <form id="profileForm">
+          <div class="form-grid-2">
+            <div class="field">
+              <label for="profileNameInput">Your name</label>
+              <input type="text" id="profileNameInput">
+              <div class="error-msg"></div>
+            </div>
+            <div class="field">
+              <label for="profileEmailInput">Your email</label>
+              <input type="email" id="profileEmailInput">
+            </div>
+          </div>
+          <div class="field">
+            <label for="profileCurrencySelect">Preferred currency</label>
+            <select id="profileCurrencySelect">
+              <option value="INR">₹ Indian Rupee (INR)</option>
+              <option value="USD">$ US Dollar (USD)</option>
+              <option value="EUR">€ Euro (EUR)</option>
+              <option value="GBP">£ British Pound (GBP)</option>
+            </select>
+            <div class="hint">This is a local browser profile for Phase 1. Sign in/sign up pages manage this local identity only; there is no cloud authentication.</div>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:20px;">
+        <div class="section-head"><h2>Browser Storage</h2><span class="badge badge-green">Local only</span></div>
+        <p class="storage-note">Your Phase 1 data stays in this browser using LocalStorage. Clearing browser/site data can remove it.</p>
+        <div class="storage-summary-grid">
+          <div><b id="storageGroupCount">0</b><span>Groups</span></div>
+          <div><b id="storageExpenseCount">0</b><span>Expenses</span></div>
+          <div><b id="storageMemberCount">0</b><span>Members</span></div>
+          <div><b id="storageSettlementCount">0</b><span>Settlements</span></div>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:20px;">
+        <div class="section-head"><h2>Backup &amp; Restore</h2><span class="badge badge-green">Local JSON</span></div>
+        <p class="storage-note">Export your groups, expenses, settlements and profile before clearing browser data. Importing a SplitSmart backup replaces the current local ledger.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" id="exportBackupBtn">Export Backup</button>
+          <label class="btn btn-outline btn-sm" for="importBackupInput" style="cursor:pointer;">Import Backup</label>
+          <input type="file" id="importBackupInput" accept="application/json,.json" hidden>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="margin-bottom:20px;">
+        <div class="section-head"><h2>Appearance</h2></div>
+        <div class="checkbox-row" style="justify-content:space-between;">
+          <div>
+            <div style="font-weight:650;font-size:.92rem;">Dark mode</div>
+            <div class="hint">Switch between light and dark themes</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="darkModeSwitch">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card card-pad" style="border-color:var(--red-soft);">
+        <div class="section-head"><h2>Danger Zone</h2></div>
+        <div class="checkbox-row" style="justify-content:space-between;">
+          <div>
+            <div style="font-weight:650;font-size:.92rem;">Reset demo data</div>
+            <div class="hint">Reload the "Goa Trip 2026" sample group</div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="resetDemoBtn">Reset Demo Data</button>
+        </div>
+        <div class="checkbox-row" style="justify-content:space-between;">
+          <div>
+            <div style="font-weight:650;font-size:.92rem;">Clear all data</div>
+            <div class="hint">Permanently delete every group, expense &amp; settlement</div>
+          </div>
+          <button class="btn btn-danger btn-sm" id="clearAllDataBtn">Clear All Data</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/settlement.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initShell('profile', 'Profile & Settings');
+    initProfilePage();
+  });
+</script>
+</body>
+</html>

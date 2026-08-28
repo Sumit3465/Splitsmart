@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settlement Optimiser — SplitSmart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="main-area">
+    <header class="topbar" id="topbar"></header>
+    <main class="page-content">
+
+      <div class="card card-pad" style="margin-bottom:24px;">
+        <div class="field" style="margin-bottom:0;">
+          <label for="settlementGroupSelect">Choose a group to settle</label>
+          <select id="settlementGroupSelect"></select>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="card stat-card tone-red">
+          <div class="stat-icon">📉</div>
+          <div class="stat-label">Total Debt Before Optimisation</div>
+          <div class="stat-value" id="settleTotalDebt">₹0</div>
+        </div>
+        <div class="card stat-card tone-orange">
+          <div class="stat-icon">🔀</div>
+          <div class="stat-label">Optimised Transactions</div>
+          <div class="stat-value" id="settleTxnCount">0</div>
+        </div>
+        <div class="card stat-card tone-blue">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">Total Group Spend</div>
+          <div class="stat-value" id="settleTotalExpense">₹0</div>
+        </div>
+      </div>
+
+      <div class="section-head"><h2>Settlement Plan</h2></div>
+      <div id="settlementBody"></div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/settlement.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initShell('settlement', 'Settlement Optimiser');
+    initSettlementPage();
+  });
+</script>
+</body>
+</html>

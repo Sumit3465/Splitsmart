@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics — SplitSmart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="main-area">
+    <header class="topbar" id="topbar"></header>
+    <main class="page-content" id="analyticsRoot">
+
+      <div class="section-head">
+        <h2 style="font-size:1.4rem;">Spending Analytics</h2>
+        <select id="analyticsGroupSelect" style="width:220px;"></select>
+      </div>
+
+      <div class="card empty-state" id="analyticsEmptyState" style="display:none;">
+        <div class="empty-icon">📊</div>
+        <h3>Nothing to analyse yet</h3>
+        <p>Add a few expenses and your spending breakdown will show up here.</p>
+        <a href="expenses.html?add=1" class="btn btn-primary">Add Expense</a>
+      </div>
+
+      <div id="analyticsContent">
+        <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+          <div class="card stat-card tone-orange">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Total Spend</div>
+            <div class="stat-value" id="analyticsTotalSpend">₹0</div>
+          </div>
+          <div class="card stat-card tone-blue">
+            <div class="stat-icon">🧾</div>
+            <div class="stat-label">Expenses Logged</div>
+            <div class="stat-value" id="analyticsExpenseCount">0</div>
+          </div>
+          <div class="card stat-card tone-green">
+            <div class="stat-icon">📐</div>
+            <div class="stat-label">Average Expense</div>
+            <div class="stat-value" id="analyticsAvgExpense">₹0</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card card-pad">
+            <div class="section-head"><h2>Spending by Category</h2></div>
+            <div class="donut-wrap">
+              <div class="donut" id="categoryDonut"></div>
+              <div class="donut-legend" id="categoryLegend"></div>
+            </div>
+            <div style="margin-top:24px;" id="categoryBars"></div>
+          </div>
+          <div class="card card-pad">
+            <div class="section-head"><h2>Member Contribution</h2></div>
+            <div id="memberContribution"></div>
+          </div>
+        </div>
+
+        <div class="card card-pad" style="margin-top:20px;">
+          <div class="section-head"><h2>Monthly Spending</h2></div>
+          <div id="monthlySpending"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/settlement.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/analytics.js"></script>
+<script src="js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initShell('analytics', 'Analytics');
+    initAnalyticsPage();
+  });
+</script>
+</body>
+</html>

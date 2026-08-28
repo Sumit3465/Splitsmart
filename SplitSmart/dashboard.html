@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — SplitSmart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="main-area">
+    <header class="topbar" id="topbar"></header>
+    <main class="page-content dashboard-page" id="dashboardRoot">
+
+      <section class="dashboard-hero">
+        <div>
+          <div class="eyebrow dashboard-eyebrow"><span class="eyebrow-dot"></span> Your expense command center</div>
+          <h1>Good <span id="dashboardGreetingTime">morning</span>, <span id="dashboardUserName">there</span>.</h1>
+          <p id="dashboardDateLine">Here is what is happening across your groups today.</p>
+        </div>
+        <div class="dashboard-hero-actions">
+          <a href="expenses.html?add=1" class="btn btn-primary"><span>＋</span> Add expense</a>
+          <a href="groups.html?new=1" class="btn btn-outline">Create group</a>
+        </div>
+      </section>
+
+      <div id="dashboardEmptyState" style="display:none;">
+        <div class="dashboard-empty card">
+          <div class="empty-orb">✦</div>
+          <div>
+            <span class="mini-label">YOUR FIRST STEP</span>
+            <h2>Start your first shared expense space.</h2>
+            <p>Create a group for a trip, roommates, dinner, events or anything you split with people.</p>
+            <div class="empty-actions">
+              <a href="groups.html?new=1" class="btn btn-primary">Create a group</a>
+              <button class="btn btn-outline" id="loadDemoBtn">Explore with demo data</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="dashboardMainGrid">
+        <section class="dashboard-overview-grid">
+          <div class="balance-hero card">
+            <div class="balance-hero-top">
+              <div>
+                <span class="mini-label">YOUR NET POSITION</span>
+                <h2 id="dashboardNetBalance">₹0</h2>
+                <p id="dashboardNetLabel">You're all settled up.</p>
+              </div>
+              <div class="balance-orb" id="dashboardBalanceOrb">↗</div>
+            </div>
+            <div class="balance-split">
+              <div class="balance-mini balance-mini-negative">
+                <span>You owe</span>
+                <strong id="statYouOwe">₹0</strong>
+              </div>
+              <div class="balance-divider"></div>
+              <div class="balance-mini balance-mini-positive">
+                <span>You're owed</span>
+                <strong id="statYouAreOwed">₹0</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-mini-stack">
+            <div class="metric-card card">
+              <div class="metric-icon metric-orange">◫</div>
+              <div>
+                <span>Tracked expenses</span>
+                <strong id="statTotalExpenses">₹0</strong>
+              </div>
+              <a href="expenses.html" aria-label="View expenses">↗</a>
+            </div>
+            <div class="metric-card card">
+              <div class="metric-icon metric-blue">◌</div>
+              <div>
+                <span>Active groups</span>
+                <strong id="statTotalGroups">0</strong>
+              </div>
+              <a href="groups.html" aria-label="View groups">↗</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-section-head">
+          <div>
+            <span class="mini-label">DO IT FASTER</span>
+            <h2>Quick actions</h2>
+          </div>
+          <a href="how-it-works.html" class="text-link">How it works <span>→</span></a>
+        </section>
+
+        <section class="quick-action-grid">
+          <a class="quick-action-card card" href="expenses.html?add=1">
+            <div class="quick-action-icon orange">＋</div>
+            <div><strong>Add expense</strong><span>Split a new bill</span></div>
+            <span class="quick-arrow">↗</span>
+          </a>
+          <a class="quick-action-card card" href="settlement.html">
+            <div class="quick-action-icon green">↗</div>
+            <div><strong>Settle up</strong><span>See who pays whom</span></div>
+            <span class="quick-arrow">↗</span>
+          </a>
+          <a class="quick-action-card card" href="groups.html?new=1">
+            <div class="quick-action-icon blue">◎</div>
+            <div><strong>Create group</strong><span>Start a shared space</span></div>
+            <span class="quick-arrow">↗</span>
+          </a>
+        </section>
+
+        <section class="dashboard-content-grid">
+          <div class="dashboard-panel card">
+            <div class="panel-head">
+              <div><span class="mini-label">LATEST</span><h2>Recent expenses</h2></div>
+              <a href="expenses.html" class="text-link">View all →</a>
+            </div>
+            <div class="modern-list" id="recentExpensesList"></div>
+          </div>
+
+          <div class="dashboard-panel card">
+            <div class="panel-head">
+              <div><span class="mini-label">MONEY MOVED</span><h2>Recent settlements</h2></div>
+              <a href="settlement.html" class="text-link">View all →</a>
+            </div>
+            <div class="modern-list" id="recentSettlementsList"></div>
+          </div>
+        </section>
+
+        <section class="dashboard-bottom-grid">
+          <div class="insight-card card">
+            <div class="insight-mark">✦</div>
+            <div>
+              <span class="mini-label">SMART INSIGHT</span>
+              <h3 id="dashboardInsightTitle">Keep every split in one place.</h3>
+              <p id="dashboardInsightText">Add expenses as they happen and SplitSmart will keep the balances ready for settlement.</p>
+            </div>
+          </div>
+          <a href="analytics.html" class="analytics-teaser card">
+            <div><span class="mini-label">ANALYTICS</span><h3>See where your money goes</h3><p>Explore categories, contributions and spending patterns.</p></div>
+            <span class="teaser-arrow">→</span>
+          </a>
+        </section>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/settlement.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/expenses.js"></script>
+<script src="js/analytics.js"></script>
+<script src="js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initShell('dashboard', 'Dashboard');
+    initDashboardPage();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expenses — SplitSmart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="main-area">
+    <header class="topbar" id="topbar"></header>
+    <main class="page-content">
+
+      <div class="section-head">
+        <h2 style="font-size:1.4rem;">Expenses</h2>
+        <button class="btn btn-primary" id="openAddExpenseBtn">+ Add Expense</button>
+      </div>
+
+      <div class="filter-bar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="expenseSearchInput" placeholder="Search expenses or groups…">
+        </div>
+        <select id="groupFilterSelect"></select>
+        <select id="categoryFilterSelect">
+          <option value="all">All categories</option>
+        </select>
+        <select id="sortBySelect">
+          <option value="date-desc">Newest first</option>
+          <option value="date-asc">Oldest first</option>
+          <option value="amount-desc">Amount: high to low</option>
+          <option value="amount-asc">Amount: low to high</option>
+        </select>
+      </div>
+
+      <div class="card empty-state" id="expensesEmptyState" style="display:none;">
+        <div class="empty-icon">🧾</div>
+        <h3>No expenses logged yet</h3>
+        <p>Add your first expense to start tracking spending across your groups.</p>
+        <button class="btn btn-primary" onclick="openAddExpenseModal()">Add Expense</button>
+      </div>
+
+      <div class="card table-wrap" id="expenseTableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Group</th>
+              <th>Paid By</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="expenseHistoryBody"></tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Add / Edit Expense Modal -->
+<div class="modal-overlay" id="addExpenseModal" aria-hidden="true">
+  <div class="modal-box modal-lg" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="expenseModalTitle">Add Expense</h3>
+      <button type="button" class="modal-close" onclick="closeModal('addExpenseModal')" aria-label="Close expense form">&times;</button>
+    </div>
+    <form id="addExpenseForm">
+      <div class="field">
+        <label for="expenseGroupSelect">Group</label>
+        <select id="expenseGroupSelect" required></select>
+        <div class="error-msg"></div>
+      </div>
+
+      <div class="field">
+        <label for="expenseDescInput">Description</label>
+        <input type="text" id="expenseDescInput" placeholder="e.g. Dinner at Beach Shack" maxlength="80" required>
+        <div class="error-msg"></div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="field">
+          <label for="expenseAmountInput">Amount (₹)</label>
+          <input type="number" id="expenseAmountInput" min="0.01" step="0.01" placeholder="0.00" required>
+          <div class="error-msg"></div>
+        </div>
+        <div class="field">
+          <label for="expenseDateInput">Date</label>
+          <input type="date" id="expenseDateInput" required>
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="field">
+          <label for="expenseCategorySelect">Category</label>
+          <select id="expenseCategorySelect">
+            <option>Food</option><option>Travel</option><option>Accommodation</option>
+            <option>Entertainment</option><option>Shopping</option><option>Utilities</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="expensePaidBySelect">Paid by</label>
+          <select id="expensePaidBySelect" required></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Split between</label>
+        <div class="member-select-grid" id="splitMemberGrid"></div>
+      </div>
+
+      <div class="field">
+        <label>Split method</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <label class="member-chip selected" style="cursor:pointer;">
+            <input type="radio" name="splitType" value="equal" checked style="display:none;"> Equal Split
+          </label>
+          <label class="member-chip" style="cursor:pointer;">
+            <input type="radio" name="splitType" value="custom" style="display:none;"> Custom Amount
+          </label>
+          <label class="member-chip" style="cursor:pointer;">
+            <input type="radio" name="splitType" value="percentage" style="display:none;"> Percentage
+          </label>
+        </div>
+      </div>
+
+      <div id="customSplitSection" style="display:none;">
+        <div class="field">
+          <label>Enter each member's <span id="splitUnitLabel">₹</span> share</label>
+          <div id="splitInputsList"></div>
+        </div>
+      </div>
+
+      <div class="split-total-bar" id="splitTotalBar"></div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('addExpenseModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Expense</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/settlement.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/expenses.js"></script>
+<script src="js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initShell('expenses', 'Expenses');
+    document.getElementById('categoryFilterSelect').innerHTML =
+      '<option value="all">All categories</option>' +
+      CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('');
+    initExpensesPage();
+
+    // Style radio-styled member-chips for split type
+    document.querySelectorAll('input[name="splitType"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        document.querySelectorAll('input[name="splitType"]').forEach(r => r.closest('.member-chip').classList.toggle('selected', r.checked));
+      });
+    });
+  });
+</script>
+</body>
+</html>

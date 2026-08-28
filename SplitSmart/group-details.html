@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Group Details — SplitSmart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="main-area">
+    <header class="topbar" id="topbar"></header>
+    <main class="page-content" id="groupDetailsRoot">
+
+      <a href="groups.html" style="font-size:.85rem;font-weight:600;color:var(--text-muted);display:inline-block;margin-bottom:14px;">← Back to Groups</a>
+
+      <div class="card card-pad" style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+        <div>
+          <h1 id="groupTitle" style="font-size:1.6rem;">Group</h1>
+          <p id="groupDescText" style="margin-bottom:6px;"></p>
+          <span class="badge badge-neutral" id="groupCreatedText"></span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-outline" id="openAddMemberBtn">+ Add Member</button>
+          <a href="#" id="addExpenseLink" class="btn btn-outline">+ Add Expense</a>
+          <a href="#" id="settlementLink" class="btn btn-primary">⚡ Settle Up</a>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="card stat-card tone-blue">
+          <div class="stat-icon">👥</div>
+          <div class="stat-label">Members</div>
+          <div class="stat-value" id="groupMemberCount">0</div>
+        </div>
+        <div class="card stat-card tone-orange">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">Total Spent</div>
+          <div class="stat-value" id="groupExpenseTotal">₹0</div>
+        </div>
+        <div class="card stat-card tone-green">
+          <div class="stat-icon">🧾</div>
+          <div class="stat-label">Expenses Logged</div>
+          <div class="stat-value" id="groupExpenseCount">0</div>
+        </div>
+      </div>
+
+      <div class="section-head"><h2>Members</h2></div>
+      <div class="member-grid" id="groupMembersGrid" style="margin-bottom:28px;"></div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-pad" style="padding-bottom:0;">
+            <div class="section-head" style="margin-bottom:6px;"><h2>Expense History</h2></div>
+          </div>
+          <div class="list-card" id="groupExpenseList"></div>
+        </div>
+        <div class="card">
+          <div class="card-pad" style="padding-bottom:0;">
+            <div class="section-head" style="margin-bottom:6px;"><h2>Balances</h2></div>
+          </div>
+          <div class="list-card" id="groupBalanceList"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Add Member Modal -->
+<div class="modal-overlay" id="addMemberModal" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3>Add Member</h3>
+      <button type="button" class="modal-close" onclick="closeModal('addMemberModal')" aria-label="Close member form">&times;</button>
+    </div>
+    <form id="addMemberForm">
+      <div class="field">
+        <label for="newMemberNameInput">Member name</label>
+        <input type="text" id="newMemberNameInput" placeholder="e.g. Priya" maxlength="50" required>
+        <div class="error-msg"></div>
+      </div>
+      <div class="field">
+        <label for="newMemberEmailInput">Email <span class="hint">(optional)</span></label>
+        <input type="email" id="newMemberEmailInput" placeholder="priya@example.com">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('addMemberModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Member</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/settlement.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initShell('groups', 'Group Details');
+    initGroupDetailsPage();
+    const id = getCurrentGroupId();
+    document.getElementById('addExpenseLink').href = `expenses.html?add=1&group=${id}`;
+    document.getElementById('settlementLink').href = `settlement.html?group=${id}`;
+  });
+</script>
+</body>
+</html>
