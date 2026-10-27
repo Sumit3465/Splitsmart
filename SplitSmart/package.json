@@ -4,8 +4,8 @@
   "description": "SplitSmart is a client-side JavaScript expense-sharing mini project. Phase 1 intentionally uses **HTML, CSS, vanilla JavaScript and LocalStorage only**. There is no backend, database, API, payment gateway or cloud authentication.",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js"
+   "start": "node server/server.js",
+   "dev": "nodemon server/server.js"
   },
   "keywords": [],
   "author": "",
