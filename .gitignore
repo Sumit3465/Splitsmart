@@ -1,0 +1,8 @@
+.env
+.env.local
+node_modules/
+SplitSmart/node_modules/
+SplitSmart/client/node_modules/
+SplitSmart/client/dist/
+dist/
+.DS_Store
