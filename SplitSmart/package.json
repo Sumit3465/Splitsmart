@@ -1,18 +1,32 @@
 {
   "name": "splitsmart",
-  "version": "1.0.0",
-  "description": "SplitSmart is a client-side JavaScript expense-sharing mini project. Phase 1 intentionally uses **HTML, CSS, vanilla JavaScript and LocalStorage only**. There is no backend, database, API, payment gateway or cloud authentication.",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "SplitSmart — Modern expense-sharing web application. Phase 1 (Vanilla JS & LocalStorage) + Phase 2 (React, Express, Node.js, MongoDB & JWT).",
+  "main": "server/server.js",
   "scripts": {
-   "start": "node server/server.js",
-   "dev": "nodemon server/server.js"
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "test": "node server/comprehensive_test.js",
+    "client": "npm --prefix client run dev",
+    "build:client": "npm --prefix client run build"
   },
-  "keywords": [],
+  "keywords": [
+    "expense-sharing",
+    "splitwise",
+    "mern",
+    "react",
+    "nodejs",
+    "mongodb"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.6",
-    "express": "^5.3.0"
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.24.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
