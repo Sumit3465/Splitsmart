@@ -107,8 +107,14 @@
     initShell('groups', 'Group Details');
     initGroupDetailsPage();
     const id = getCurrentGroupId();
-    document.getElementById('addExpenseLink').href = `expenses.html?add=1&group=${id}`;
-    document.getElementById('settlementLink').href = `settlement.html?group=${id}`;
+    const addExpenseLink = document.getElementById('addExpenseLink');
+    if (addExpenseLink) {
+      addExpenseLink.href = `expenses.html?add=1&group=${id}`;
+    }
+    const settlementLink = document.getElementById('settlementLink');
+    if (settlementLink) {
+      settlementLink.href = `settlement.html?group=${id}`;
+    }
   });
 </script>
 <script src="js/ui-polish.js"></script><script src="js/phase1-plus.js"></script>
